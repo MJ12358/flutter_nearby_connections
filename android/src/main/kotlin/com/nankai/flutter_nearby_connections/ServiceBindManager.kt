@@ -16,60 +16,59 @@ class ServiceBindManager(
     val callback: CallbackUtils
 ) {
 
-    val TAG: String = "ServiceBindManager"
-    var mService: NearbyService? = null
+  val TAG: String = "ServiceBindManager"
+  var mService: NearbyService? = null
 
-    private val isBound: AtomicBoolean = AtomicBoolean(false)
+  private val isBound: AtomicBoolean = AtomicBoolean(false)
 
-    private var intent: Intent = Intent(context, NearbyService::class.java)
+  private var intent: Intent = Intent(context, NearbyService::class.java)
 
-    private val connection: ServiceConnection = object : ServiceConnection {
+  private val connection: ServiceConnection =
+      object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
-            Log.d(TAG, "onServiceConnected: $context")
-            val binder = service as LocalBinder
-            mService = binder.service
-            isBound.set(true)
-            mService?.initService(callback)
-            channel.invokeMethod(NEARBY_RUNNING, isBound.get())
+          Log.d(TAG, "onServiceConnected: $context")
+          val binder = service as LocalBinder
+          mService = binder.service
+          isBound.set(true)
+          mService?.initService(callback)
+          channel.invokeMethod(NEARBY_RUNNING, isBound.get())
         }
 
         override fun onServiceDisconnected(name: ComponentName?) {
-            Log.d(TAG, "onServiceDisconnected: $context")
-            isBound.set(false)
-            channel.invokeMethod(NEARBY_RUNNING, isBound.get())
+          Log.d(TAG, "onServiceDisconnected: $context")
+          isBound.set(false)
+          channel.invokeMethod(NEARBY_RUNNING, isBound.get())
         }
 
         override fun onBindingDied(name: ComponentName?) {
-            Log.d(TAG, "onBindingDied: $context")
-            isBound.set(false)
-            channel.invokeMethod(NEARBY_RUNNING, isBound.get())
+          Log.d(TAG, "onBindingDied: $context")
+          isBound.set(false)
+          channel.invokeMethod(NEARBY_RUNNING, isBound.get())
         }
 
         override fun onNullBinding(name: ComponentName?) {
-            Log.d(TAG, "onNullBinding: $context")
-            isBound.set(false)
-            channel.invokeMethod(NEARBY_RUNNING, isBound.get())
+          Log.d(TAG, "onNullBinding: $context")
+          isBound.set(false)
+          channel.invokeMethod(NEARBY_RUNNING, isBound.get())
         }
+      }
+
+  fun bindService() {
+    Log.e(TAG, "bindService: $context")
+    isBound.set(context.bindService(intent, connection, BIND_AUTO_CREATE))
+  }
+
+  fun unbindService() {
+    try {
+      Log.e(TAG, "unbindService: $context")
+      if (isBound.get()) {
+        isBound.set(false)
+        context.unbindService(connection)
+      }
+    } catch (e: Exception) {
+      e.printStackTrace()
     }
-
-
-    fun bindService() {
-        Log.e(TAG, "bindService: $context")
-        isBound.set(context.bindService(intent, connection, BIND_AUTO_CREATE))
-    }
-
-    fun unbindService() {
-        try {
-            Log.e(TAG, "unbindService: $context")
-            if (isBound.get()) {
-                isBound.set(false)
-                context.unbindService(connection)
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-        mService?.stopForeground(true)
-        mService?.stopSelf()
-    }
-
+    mService?.stopForeground(true)
+    mService?.stopSelf()
+  }
 }
