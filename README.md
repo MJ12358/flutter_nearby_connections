@@ -1,20 +1,22 @@
 # flutter_nearby_connections
+
 flutter nearby connections
 
-#### Plugin: [https://pub.dev/packages/flutter_nearby_connections](https://pub.dev/packages/flutter_nearby_connections)
+## Plugin: [https://pub.dev/packages/flutter_nearby_connections](https://pub.dev/packages/flutter_nearby_connections)
 
-### Flutter plugin supports peer-to-peer connectivity and discovers nearby devices for Android and IOS
+## Flutter plugin supports peer-to-peer connectivity and discovers nearby devices for Android and IOS
+
 The flutter_nearby_connections plugin supports the discovery of services provided by nearby devices.
 Moreover, the flutter_nearby_connections plugin also supports communicating with those services through message-based data, streaming data, and resources (such as files). The framework uses infrastructure Wi-Fi networks, peer-to-peer Wi-Fi and Bluetooth Personal Area Networks (PAN) for the underlying transport over UDP.
-The project is based on 
+The project is based on:
 
-#### Android
+### Android
 
 [Nearby Connections API](https://developers.google.com/nearby/connections/overview) (Bluetooth & hotspot) Support [Strategy](https://pub.dev/documentation/flutter_nearby_connections/latest/flutter_nearby_connections/Strategy-class.html): ***Strategy.P2P_CLUSTER***, ***Strategy.P2P_STAR***, ***Strategy.P2P_POINT_TO_POINT***
 
 [Wi-Fi P2P](https://developer.android.com/guide/topics/connectivity/wifip2p) (only wifi hotspot no internet) Support [Strategy](https://pub.dev/documentation/flutter_nearby_connections/latest/flutter_nearby_connections/Strategy-class.html): ***Strategy.Wi_Fi_P2P***
 
-#### IOS
+### IOS
 
 [Multipeer Connectivity](https://developer.apple.com/documentation/multipeerconnectivity)
 
@@ -28,9 +30,9 @@ We separate the dependencies of the MCNearbyServiceAdvertiser, MCNearbyServiceBr
 
 ### Noted
 
-* ##### Android doesn't support emulator only support real devices
+* #### Android doesn't support emulator only support real devices
 
-* ##### On iOS 14, need to define in Info.plist
+* #### On iOS 14, need to define in Info.plist
 
 ``` xml
     <key>NSBonjourServices</key>
@@ -47,8 +49,9 @@ in this case, YOUR_SERVICE_TYPE is 'mp-connection' (you can define it)
 
 ``` dart
 nearbyService.init(
-        serviceType: 'mp-connection',
-        strategy: Strategy.P2P_CLUSTER,
+  serviceType: 'mp-connection',
+  strategy: Strategy.P2P_CLUSTER,
+);
 ```
 
 #### Test on IOS device
@@ -58,6 +61,3 @@ nearbyService.init(
 #### Test on Android device
 
 ![The example app running in Android](https://github.com/VNAPNIC/flutter_nearby_connections/blob/master/android-screen.gif?raw=true)
-
-## Visitors Count
-<img height="30px" src = "https://profile-counter.glitch.me/vnapnic/count.svg" alt ="Loading">

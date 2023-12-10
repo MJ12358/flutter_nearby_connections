@@ -1,39 +1,44 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_nearby_connections/flutter_nearby_connections.dart';
-import 'package:flutter_styled_toast/flutter_styled_toast.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Route<dynamic> generateRoute(RouteSettings settings) {
   switch (settings.name) {
     case '/':
-      return MaterialPageRoute(builder: (_) => Home());
+      return MaterialPageRoute<void>(builder: (_) => const Home());
     case 'browser':
-      return MaterialPageRoute(
-          builder: (_) => DevicesListScreen(deviceType: DeviceType.browser));
+      return MaterialPageRoute<void>(
+        builder: (_) => const DevicesListScreen(deviceType: DeviceType.browser),
+      );
     case 'advertiser':
-      return MaterialPageRoute(
-          builder: (_) => DevicesListScreen(deviceType: DeviceType.advertiser));
+      return MaterialPageRoute<void>(
+        builder: (_) =>
+            const DevicesListScreen(deviceType: DeviceType.advertiser),
+      );
     default:
-      return MaterialPageRoute(
-          builder: (_) => Scaffold(
-                body: Center(
-                    child: Text('No route defined for ${settings.name}')),
-              ));
+      return MaterialPageRoute<void>(
+        builder: (_) => Scaffold(
+          body: Center(
+            child: Text('No route defined for ${settings.name}'),
+          ),
+        ),
+      );
   }
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       onGenerateRoute: generateRoute,
       initialRoute: '/',
     );
@@ -41,11 +46,13 @@ class MyApp extends StatelessWidget {
 }
 
 class Home extends StatelessWidget {
+  const Home({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-        children: [
+        children: <Widget>[
           Expanded(
             child: InkWell(
               onTap: () {
@@ -53,11 +60,12 @@ class Home extends StatelessWidget {
               },
               child: Container(
                 color: Colors.red,
-                child: Center(
-                    child: Text(
-                  'BROWSER',
-                  style: TextStyle(color: Colors.white, fontSize: 40),
-                )),
+                child: const Center(
+                  child: Text(
+                    'BROWSER',
+                    style: TextStyle(color: Colors.white, fontSize: 40),
+                  ),
+                ),
               ),
             ),
           ),
@@ -68,11 +76,12 @@ class Home extends StatelessWidget {
               },
               child: Container(
                 color: Colors.green,
-                child: Center(
-                    child: Text(
-                  'ADVERTISER',
-                  style: TextStyle(color: Colors.white, fontSize: 40),
-                )),
+                child: const Center(
+                  child: Text(
+                    'ADVERTISER',
+                    style: TextStyle(color: Colors.white, fontSize: 40),
+                  ),
+                ),
               ),
             ),
           ),
@@ -85,7 +94,7 @@ class Home extends StatelessWidget {
 enum DeviceType { advertiser, browser }
 
 class DevicesListScreen extends StatefulWidget {
-  const DevicesListScreen({required this.deviceType});
+  const DevicesListScreen({super.key, required this.deviceType});
 
   final DeviceType deviceType;
 
@@ -94,8 +103,8 @@ class DevicesListScreen extends StatefulWidget {
 }
 
 class _DevicesListScreenState extends State<DevicesListScreen> {
-  List<Device> devices = [];
-  List<Device> connectedDevices = [];
+  List<Device> devices = <Device>[];
+  List<Device> connectedDevices = <Device>[];
   late NearbyService nearbyService;
   late StreamSubscription subscription;
   late StreamSubscription receivedDataSubscription;
@@ -112,87 +121,92 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   void dispose() {
     subscription.cancel();
     receivedDataSubscription.cancel();
-    nearbyService.stopBrowsingForPeers();
-    nearbyService.stopAdvertisingPeer();
+    nearbyService.stopBrowsing();
+    nearbyService.stopAdvertising();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.deviceType.toString().substring(11).toUpperCase()),
-        ),
-        backgroundColor: Colors.white,
-        body: ListView.builder(
-            itemCount: getItemCount(),
-            itemBuilder: (context, index) {
-              final device = widget.deviceType == DeviceType.advertiser
-                  ? connectedDevices[index]
-                  : devices[index];
-              return Container(
-                margin: EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    Row(
-                      children: [
-                        Expanded(
-                            child: GestureDetector(
-                          onTap: () => _onTabItemListener(device),
-                          child: Column(
-                            children: [
-                              Text(device.deviceName),
-                              Text(
-                                getStateName(device.state),
-                                style: TextStyle(
-                                    color: getStateColor(device.state)),
-                              ),
-                            ],
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                          ),
-                        )),
-                        // Request connect
-                        GestureDetector(
-                          onTap: () => _onButtonClicked(device),
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 8.0),
-                            padding: EdgeInsets.all(8.0),
-                            height: 35,
-                            width: 100,
-                            color: getButtonColor(device.state),
-                            child: Center(
-                              child: Text(
-                                getButtonStateName(device.state),
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
+      appBar: AppBar(
+        title: Text(widget.deviceType.toString().substring(11).toUpperCase()),
+      ),
+      backgroundColor: Colors.white,
+      body: ListView.builder(
+        itemCount: getItemCount(),
+        itemBuilder: (BuildContext context, int index) {
+          final Device device = widget.deviceType == DeviceType.advertiser
+              ? connectedDevices[index]
+              : devices[index];
+          return Container(
+            margin: const EdgeInsets.all(8.0),
+            child: Column(
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () => _onTabItemListener(device),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(device.deviceName),
+                            Text(
+                              getStateName(device.state),
+                              style: TextStyle(
+                                color: getStateColor(device.state),
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    // Request connect
+                    GestureDetector(
+                      onTap: () => _onButtonClicked(device),
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.all(8.0),
+                        height: 35,
+                        width: 100,
+                        color: getButtonColor(device.state),
+                        child: Center(
+                          child: Text(
+                            getButtonStateName(device.state),
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                        )
-                      ],
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      height: 8.0,
-                    ),
-                    Divider(
-                      height: 1,
-                      color: Colors.grey,
-                    )
                   ],
                 ),
-              );
-            }));
+                const SizedBox(
+                  height: 8.0,
+                ),
+                const Divider(
+                  height: 1,
+                  color: Colors.grey,
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
   }
 
   String getStateName(SessionState state) {
     switch (state) {
       case SessionState.notConnected:
-        return "disconnected";
+        return 'disconnected';
       case SessionState.connecting:
-        return "waiting";
+        return 'waiting';
       default:
-        return "connected";
+        return 'connected';
     }
   }
 
@@ -200,9 +214,9 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
     switch (state) {
       case SessionState.notConnected:
       case SessionState.connecting:
-        return "Connect";
+        return 'Connect';
       default:
-        return "Disconnect";
+        return 'Disconnect';
     }
   }
 
@@ -230,30 +244,33 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
   _onTabItemListener(Device device) {
     if (device.state == SessionState.connected) {
       showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            final myController = TextEditingController();
-            return AlertDialog(
-              title: Text("Send message"),
-              content: TextField(controller: myController),
-              actions: [
-                TextButton(
-                  child: Text("Cancel"),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                TextButton(
-                  child: Text("Send"),
-                  onPressed: () {
-                    nearbyService.sendMessage(
-                        device.deviceId, myController.text);
-                    myController.text = '';
-                  },
-                )
-              ],
-            );
-          });
+        context: context,
+        builder: (BuildContext context) {
+          final TextEditingController myController = TextEditingController();
+          return AlertDialog(
+            title: const Text('Send message'),
+            content: TextField(controller: myController),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: const Text('Send'),
+                onPressed: () {
+                  nearbyService.sendMessage(
+                    deviceId: device.deviceId,
+                    message: myController.text,
+                  );
+                  myController.text = '';
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -269,82 +286,83 @@ class _DevicesListScreenState extends State<DevicesListScreen> {
     switch (device.state) {
       case SessionState.notConnected:
         nearbyService.invitePeer(
-          deviceID: device.deviceId,
+          deviceId: device.deviceId,
           deviceName: device.deviceName,
         );
-        break;
       case SessionState.connected:
-        nearbyService.disconnectPeer(deviceID: device.deviceId);
-        break;
+        nearbyService.disconnectPeer(deviceId: device.deviceId);
       case SessionState.connecting:
         break;
     }
   }
 
-  void init() async {
+  Future<void> init() async {
     nearbyService = NearbyService();
     String devInfo = '';
-    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+    final DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
     if (Platform.isAndroid) {
-      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+      final AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
       devInfo = androidInfo.model;
     }
     if (Platform.isIOS) {
-      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      final IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
       devInfo = iosInfo.localizedModel;
     }
     await nearbyService.init(
-        serviceType: 'mpconn',
-        deviceName: devInfo,
-        strategy: Strategy.P2P_CLUSTER,
-        callback: (isRunning) async {
-          if (isRunning) {
-            if (widget.deviceType == DeviceType.browser) {
-              await nearbyService.stopBrowsingForPeers();
-              await Future.delayed(Duration(microseconds: 200));
-              await nearbyService.startBrowsingForPeers();
-            } else {
-              await nearbyService.stopAdvertisingPeer();
-              await nearbyService.stopBrowsingForPeers();
-              await Future.delayed(Duration(microseconds: 200));
-              await nearbyService.startAdvertisingPeer();
-              await nearbyService.startBrowsingForPeers();
-            }
-          }
-        });
-    subscription =
-        nearbyService.stateChangedSubscription(callback: (devicesList) {
-      devicesList.forEach((element) {
-        print(
-            " deviceId: ${element.deviceId} | deviceName: ${element.deviceName} | state: ${element.state}");
-
-        if (Platform.isAndroid) {
-          if (element.state == SessionState.connected) {
-            nearbyService.stopBrowsingForPeers();
+      serviceType: 'mpconn',
+      deviceName: devInfo,
+      strategy: Strategy.P2P_CLUSTER,
+      callback: (bool isRunning) async {
+        if (isRunning) {
+          if (widget.deviceType == DeviceType.browser) {
+            await nearbyService.stopBrowsing();
+            await Future<void>.delayed(const Duration(microseconds: 200));
+            await nearbyService.startBrowsing();
           } else {
-            nearbyService.startBrowsingForPeers();
+            await nearbyService.stopAdvertising();
+            await nearbyService.stopBrowsing();
+            await Future<void>.delayed(const Duration(microseconds: 200));
+            await nearbyService.startAdvertising();
+            await nearbyService.startBrowsing();
           }
         }
-      });
+      },
+    );
+    // subscription = nearbyService.stateChangedSubscription(
+    //   callback: (List<Device> devicesList) {
+    //     for (final Device element in devicesList) {
+    //       if (Platform.isAndroid) {
+    //         if (element.state == SessionState.connected) {
+    //           nearbyService.stopBrowsing();
+    //         } else {
+    //           nearbyService.startBrowsing();
+    //         }
+    //       }
+    //     }
 
-      setState(() {
-        devices.clear();
-        devices.addAll(devicesList);
-        connectedDevices.clear();
-        connectedDevices.addAll(devicesList
-            .where((d) => d.state == SessionState.connected)
-            .toList());
-      });
-    });
+    //     setState(() {
+    //       devices.clear();
+    //       devices.addAll(devicesList);
+    //       connectedDevices.clear();
+    //       connectedDevices.addAll(
+    //         devicesList
+    //             .where((Device d) => d.state == SessionState.connected)
+    //             .toList(),
+    //       );
+    //     });
+    //   },
+    // );
 
-    receivedDataSubscription =
-        nearbyService.dataReceivedSubscription(callback: (data) {
-      print("dataReceivedSubscription: ${jsonEncode(data)}");
-      showToast(jsonEncode(data),
-          context: context,
-          axis: Axis.horizontal,
-          alignment: Alignment.center,
-          position: StyledToastPosition.bottom);
-    });
+    // receivedDataSubscription = nearbyService.dataReceivedSubscription(
+    //   callback: (data) {
+    //     showToast(
+    //       jsonEncode(data),
+    //       context: context,
+    //       axis: Axis.horizontal,
+    //       alignment: Alignment.center,
+    //       position: StyledToastPosition.bottom,
+    //     );
+    //   },
+    // );
   }
 }

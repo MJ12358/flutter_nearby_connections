@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   const MethodChannel channel = MethodChannel('flutter_nearby_connections');
-  TestDefaultBinaryMessenger messenger =
+  final TestDefaultBinaryMessenger messenger =
       TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
 
   TestWidgetsFlutterBinding.ensureInitialized();

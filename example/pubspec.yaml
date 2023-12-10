@@ -9,19 +9,17 @@ environment:
   sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
-  flutter:
-    sdk: flutter
-
-  flutter_styled_toast: ^2.2.1
-
-  flutter_nearby_connections:
-    path: ../
-
   cupertino_icons: ^1.0.6
   device_info_plus: ^9.1.1
+  flutter:
+    sdk: flutter
+  flutter_nearby_connections:
+    path: ../
+  flutter_styled_toast: ^2.2.1
   flutter_udid: ^2.0.1
 
 dev_dependencies:
+  dart_lintz: ^1.2.1
   flutter_test:
     sdk: flutter
 

@@ -1,3 +1,5 @@
+# flutter_nearby_connections
+
 ## 1.1.1
 
 * Update readme - test on the real Android device.

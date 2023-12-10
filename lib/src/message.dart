@@ -11,7 +11,10 @@ class Message {
 
   Message(this.deviceId, this.message);
 
-  factory Message.fromJson(json) {
-    return Message(json["deviceId"], json["message"]);
+  factory Message.fromJson(Map<String, Object> json) {
+    return Message(
+      json['deviceId']! as String,
+      json['message']! as String,
+    );
   }
 }
